@@ -1,22 +1,16 @@
-import request from "/@/utils/request";
+import request from "/@/api/request";
 
 export function getNum(){
     return request({
-        url:'/user/getNum',
+        url:'/cms/home/getNum',
         method:'get'
     })
 }
 
-export function getPercentage(){
-    return request({
-        url:'/user/percentage',
-        method:'get'
-    })
-}
 
-export function getClassStuNum(){
+export function getDessertNum(){
     return request({
-        url:'/user/getClassStuNum',
+        url:'/cms/home/getDessertNum',
         method:'get'
     })
 }

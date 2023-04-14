@@ -47,6 +47,21 @@ export const dynamicRoutes: Array<RouteRecordRaw> = [
 				},
 			},
 			{
+				path: '/good',
+				name: 'good',
+				component: () => import('/@/views/good/index.vue'),
+				meta: {
+					title: '点心管理',
+					isLink: '',
+					isHide: false,
+					isKeepAlive: true,
+					isAffix: true,
+					isIframe: false,
+					roles: ['admin', 'common'],
+					icon: 'ele-Avatar',
+				},
+			},
+			{
 				path: '/teacher',
 				name: 'teacher',
 				component: () => import('/@/views/teacher/index.vue'),

@@ -27,7 +27,7 @@ export function editTeacher(obj:object){
 
 
 // 获取匹配搜索关键字的Table数据
-export function searchGoodInfo(obj:object) {
+export function searchInfo(obj:object) {
     return request({
         url: '/cms/good/search',
         method:'get',

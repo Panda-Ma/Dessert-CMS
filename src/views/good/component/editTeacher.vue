@@ -1,13 +1,13 @@
 <template>
   <div class="edit-teacher-container">
-    <el-dialog title="修改老师" v-model="isShowDialog" width="769px" @close="resetData">
+    <el-dialog title="修改页面" v-model="isShowDialog" width="769px" @close="resetData">
       <el-form :model="data" size="default" label-width="90px" label-position="top" :rules="rules"
                ref="formRef">
         <el-row>
           <el-col :span="12">
             <el-col class="mb20" :span="18">
-              <el-form-item label="姓名" prop="name">
-                <el-input v-model="data.name" placeholder="请输入老师姓名" clearable></el-input>
+              <el-form-item label="商品名称" prop="name">
+                <el-input v-model="data.name" placeholder="请输入商品名称" clearable></el-input>
               </el-form-item>
             </el-col>
             <el-col class="mb20" :span="18">

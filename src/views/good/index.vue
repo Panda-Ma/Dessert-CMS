@@ -14,7 +14,7 @@
           </el-icon>
           添加新种类
         </el-button>
-        <el-input v-model="searchKey" placeholder="搜索..." clearable class="w-50 m-2" size="default"
+        <el-input v-model="searchKey" placeholder="搜索商品名" clearable class="w-50 m-2" size="default"
                   style="max-width: 300px;position: absolute;right: 30px">
           <template #append>
             <el-button @click="search">
@@ -74,9 +74,9 @@ import {reactive, toRefs, defineComponent, onMounted, ref, computed} from 'vue';
 import SvgIcon from "/@/components/svgIcon/index.vue";
 import {ElMessage} from "element-plus";
 import {Good} from "/@/views/good/interface";
-import AddTeacher from "/@/views/good/component/addTeacher.vue";
-import EditTeacher from "/@/views/good/component/editTeacher.vue";
-import {initGoodTable,searchGoodInfo} from "/@/api/good/index.ts";
+// import AddTeacher from "/@/views/good/component/addTeacher.vue";
+// import EditTeacher from "/@/views/good/component/editTeacher.vue";
+import {initGoodTable,searchInfo} from "/@/api/good/index.ts";
 
 
 // 页面数据：表格数据、分页数据
@@ -119,21 +119,23 @@ export default defineComponent({
     }
     // 更新表格数据
     const resetData = (res: any) => {
-      const arr: Array<Good> = [];
-      res.data.forEach((val: any) => {
-        arr.push({
-          id: val.id,
-          listId:val.listId,
-          name:val.name,
-          img: val.img,
-          intro:val.intro,
-          price:val.price,
-          list: val.list,
-          state:val.state,
-        })
-      })
-      state.data = arr;
-      state.total = arr.length;
+      // const arr: Array<Good> = [];
+      // res.data.forEach((val: any) => {
+      //   arr.push({
+      //     id: val.id,
+      //     listId:val.listId,
+      //     name:val.name,
+      //     img: val.img,
+      //     intro:val.intro,
+      //     price:val.price,
+      //     list: val.list,
+      //     state:val.state,
+      //   })
+      // })
+      // state.data = arr;
+      // state.total = arr.length;
+      state.data=res.data
+      state.total=res.data.length
     }
     // 添加
     const onAdd = () => {
@@ -143,16 +145,15 @@ export default defineComponent({
     // 搜索框
     const search= () => {
       state.loading=true
-      console.log(searchKey.value);
-      searchGoodInfo({
+      searchInfo({
         keyword: searchKey.value
       }).then((res: any) => {
+        state.loading = false // 加载动画结束
         if (res.code == 200) {
           resetData(res)
         } else {
-          ElMessage.error('抱歉,搜索失败...'+res.msg)
+          ElMessage.error('抱歉,搜索失败...')
         }
-        state.loading = false // 加载动画结束
       })
     }
 

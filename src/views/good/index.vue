@@ -23,27 +23,27 @@
           </template>
         </el-input>
       </div>
-      <el-table :data="currentData" style="width: 100%"  ref="tableRef" v-loading="loading">
+      <el-table :data="currentData" style="width: 100%" ref="tableRef" v-loading="loading">
         <el-table-column type="selection"></el-table-column>
         <el-table-column label="主键" v-if="false" prop="id"></el-table-column>
         <el-table-column label="种类listId" v-if="false" prop="listId"></el-table-column>
         <el-table-column prop="img" label="封面" align="center" width="100px">
-          <template #default="scope" >
+          <template #default="scope">
             <el-image :preview-src-list="[scope.row.img]" :src="scope.row.img"
                       fit="contain" preview-teleported style="width: 100%;min-height: 50px">
             </el-image>
           </template>
         </el-table-column>
         <el-table-column prop="name" label="商品名" align="center" width="100px"></el-table-column>
-        <el-table-column prop="intro" label="介绍"  align="center" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="intro" label="介绍" align="center" show-overflow-tooltip></el-table-column>
         <el-table-column prop="state" label="状态" align="center" width="105px">
           <template #default="scope">
             <el-tag type="info" v-if="scope.row.state==='下架'">下架</el-tag>
             <el-tag type="success" v-else-if="scope.row.state==='上架'">上架</el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="price" label="单价"  align="center" ></el-table-column>
-        <el-table-column prop="list" label="种类"  align="center" ></el-table-column>
+        <el-table-column prop="price" label="单价" align="center"></el-table-column>
+        <el-table-column prop="list" label="种类" align="center"></el-table-column>
         <el-table-column label="操作" align="center" width="100px">
           <template #default="scope">
             <el-button size="small" text type="primary" @click="onEdit(scope.row)">
@@ -66,6 +66,7 @@
     </el-card>
     <Add ref="addRef" @tableChange='initTableData'></Add>
     <Edit ref="editRef" @tableChange='initTableData'></Edit>
+    <Category ref="newRef" @tableChange='initTableData'></Category>
   </div>
 </template>
 
@@ -76,25 +77,27 @@ import {ElMessage} from "element-plus";
 import {IData} from "/@/views/good/interface";
 import Edit from "/@/views/good/component/edit.vue";
 import Add from "/@/views/good/component/add.vue";
-import {initGoodTable,searchInfo} from "/@/api/good/index.ts";
+import Category from "/@/views/good/component/category.vue";
+import {initGoodTable, searchInfo} from "/@/api/good/index.ts";
 
 
 // 页面数据：表格数据、分页数据
 interface TableState {
-    data: Array<IData>
-    total: number;
-    loading: boolean;
-    currentPage: number; // 当前页码
-    pageSize: number;   // 每页显示的页数
+  data: Array<IData>
+  total: number;
+  loading: boolean;
+  currentPage: number; // 当前页码
+  pageSize: number;   // 每页显示的页数
 }
 
 
 export default defineComponent({
   name: 'good',
-  components: { SvgIcon,Edit,Add},
+  components: {SvgIcon, Edit, Add, Category},
   setup() {
     const addRef = ref()
     const editRef = ref()
+    const newRef = ref()
     const tableRef = ref()
     const searchKey = ref('')   // 搜索关键字
 
@@ -110,17 +113,17 @@ export default defineComponent({
     })
     // 初始化表格数据
     const initTableData = () => {
-      initGoodTable().then((res:any) => {
+      initGoodTable().then((res: any) => {
         resetData(res)
       })
     };
-    const onNew=()=>{
-
+    const onNew = () => {
+      newRef.value.openDialog()
     }
     // 更新表格数据
     const resetData = (res: any) => {
-      state.data=res.data
-      state.total=res.data.length
+      state.data = res.data
+      state.total = res.data.length
     }
     // 添加
     const onAdd = () => {
@@ -128,8 +131,8 @@ export default defineComponent({
     }
 
     // 搜索框
-    const search= () => {
-      state.loading=true
+    const search = () => {
+      state.loading = true
       searchInfo({
         keyword: searchKey.value
       }).then((res: any) => {
@@ -154,6 +157,7 @@ export default defineComponent({
       tableRef,
       addRef,
       editRef,
+      newRef,
       searchKey,
       currentData,
       search,

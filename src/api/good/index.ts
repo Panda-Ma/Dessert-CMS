@@ -41,3 +41,10 @@ export function getList() {
         method:'get',
     })
 }
+export function newCategory(obj:object){
+    return request({
+        url: '/cms/good/category',
+        method:'post',
+        data:obj
+    })
+}

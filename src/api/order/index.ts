@@ -40,3 +40,10 @@ export function getDetail(obj:object) {
         params:obj
     })
 }
+export function setOrderCompleted(obj: object) {
+    return request({
+        url: '/cms/order/setOrderCompleted'
+        , method: 'post'
+        , data: obj
+    })
+}

@@ -36,6 +36,12 @@
             <el-button size="small" text type="primary" @click="onDetail(scope.row)">
               详情
             </el-button>
+            <el-button size="small" text type="primary" @click="onEdit(scope.row)" v-if="scope.row.state=='进行中'">
+              修改状态
+            </el-button>
+            <el-button size="small" text type="primary" @click="exportExcel(scope.row)">
+              导出
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -61,7 +67,9 @@ import SvgIcon from "/@/components/svgIcon/index.vue";
 import {ElMessage} from "element-plus";
 import {IData} from "/@/views/order/interface";
 import Detail from "/@/views/order/component/detail.vue";
-import {initOrderTable, searchIncomplete, searchInfo} from "/@/api/order/index.ts";
+import {getDetail, initOrderTable, searchIncomplete, searchInfo, setOrderCompleted} from "/@/api/order/index.ts";
+import {ElMessageBox} from "element-plus/es";
+import {deleteCourse} from "/@/api/course";
 
 
 // 页面数据：表格数据、分页数据
@@ -76,7 +84,7 @@ interface TableState {
 
 export default defineComponent({
   name: 'order',
-  components: {SvgIcon,Detail},
+  components: {SvgIcon, Detail},
   setup() {
     const detailRef = ref()
     const tableRef = ref()
@@ -130,9 +138,58 @@ export default defineComponent({
         }
       })
     }
-
+    const onEdit = (row: IData) => {
+      ElMessageBox.confirm(`将订单编号-${row.id} 设为已完成（此操作不可撤销）`, '修改订单状态', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'info',
+      }).then(() => { // 对应confirm
+        setOrderCompleted({
+          id: row.id
+        }).then((res: any) => {
+          if (res.code == 200) {
+            ElMessage.success('订单已完成');
+            initTableData()
+          } else ElMessage.error('修改订单状态失败')
+        })
+      })
+    }
     const onDetail = (row: IData) => {
       detailRef.value.openDialog(row)
+    }
+    const exportExcel = async (row: IData) => {
+      //列标题，逗号隔开，每一个逗号就是隔开一个单元格
+      let str = '';
+      let IOrder = {
+        id: '订单编号', // 主键
+        userId: '用户编号', // 用户id
+        sum: '商品总价',
+        num: '商品总数',
+        note: '备注',
+        time: '下单时间',
+        state: '订单状态'
+      }
+      for (let item in row) {
+        str = str + IOrder[item as keyof IData] + ',' + row[item as keyof IData] + '\n'
+      }
+      str = str + '\n商品明细\n'
+      const res=await getDetail({
+        orderId: row.id
+      })
+      for(let item of res.data.goods){
+        str=str+item.name+','+`数量：${item.num}，实付价格：${item.price}\n`
+      }
+
+      //encodeURIComponent解决中文乱码
+      let uri = "data:text/csv;charset=utf-8,\ufeff" + encodeURIComponent(str);
+      //通过创建a标签实现
+      let link = document.createElement("a");
+      link.href = uri;
+      //对下载的文件命名
+      link.download = `订单明细-订单编号${row.id}.csv`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     }
     // 页面加载时
     onMounted(() => {
@@ -147,7 +204,9 @@ export default defineComponent({
       search,
       initTableData,
       onDetail,
-      getIncomplete
+      getIncomplete,
+      onEdit,
+      exportExcel
     };
   },
 });

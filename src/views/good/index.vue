@@ -34,9 +34,9 @@
             </el-image>
           </template>
         </el-table-column>
-        <el-table-column prop="name" label="商品名" align="center" width="100px"></el-table-column>
-        <el-table-column prop="intro" label="介绍" align="center" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="state" label="状态" align="center" width="105px">
+        <el-table-column prop="name" label="商品名" align="center" ></el-table-column>
+        <el-table-column prop="intro" label="介绍" align="center" ></el-table-column>
+        <el-table-column prop="state" label="状态" align="center" >
           <template #default="scope">
             <el-tag type="info" v-if="scope.row.state==='下架'">下架</el-tag>
             <el-tag type="success" v-else-if="scope.row.state==='上架'">上架</el-tag>

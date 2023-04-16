@@ -19,8 +19,9 @@
         </el-input>
       </div>
       <el-table :data="currentData" style="width: 100%" ref="tableRef" v-loading="loading">
-        <el-table-column label="订单编号" prop="id"></el-table-column>
-        <el-table-column label="用户userId" prop="userId"></el-table-column>
+        <el-table-column type="selection"></el-table-column>
+        <el-table-column label="订单编号" prop="id" width="100px" align="center"></el-table-column>
+        <el-table-column label="用户userId" prop="userId" align="center"></el-table-column>
         <el-table-column prop="sum" label="总价" align="center" width="100px"></el-table-column>
         <el-table-column prop="num" label="商品数量" align="center"></el-table-column>
         <el-table-column prop="note" label="备注" align="center" show-overflow-tooltip></el-table-column>

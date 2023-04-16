@@ -7,16 +7,6 @@ export function initOrderTable() {
     })
 }
 
-
-export function editOrder(obj: object) {
-    return request({
-        url: '/cms/order/edit'
-        , method: 'post'
-        , data: obj
-    })
-}
-
-
 // 获取匹配搜索关键字的Table数据
 export function searchInfo(obj: object) {
     return request({

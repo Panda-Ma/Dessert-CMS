@@ -8,17 +8,17 @@ export function initGoodTable(){
 }
 
 
-export function addTeacher(obj:object){
+export function addGood(obj:object){
     return request({
-        url:'/teacher/add'
+        url:'/cms/good/add'
         ,method:'post'
         ,data:obj
     })
 }
 
-export function editTeacher(obj:object){
+export function editGood(obj:object){
     return request({
-        url:'/teacher/updateInfo'
+        url:'/cms/good/edit'
         ,method:'post'
         ,data:obj
     })

@@ -1,6 +1,6 @@
 <template>
   <div class="edit-teacher-container">
-    <el-dialog title="修改页面" v-model="isShowDialog" width="769px" @close="resetData" @open="getAllList">
+    <el-dialog title="添加页面" v-model="isShowDialog" width="769px" @close="resetData" @open="getAllList">
       <el-form :model="data" size="default" label-width="90px" label-position="top" :rules="rules"
                ref="formRef">
         <el-row>
@@ -60,7 +60,7 @@
       <template #footer>
 				<span class="dialog-footer">
 					<el-button @click="onCancel" size="default">取 消</el-button>
-					<el-button type="primary" @click="onSubmit(formRef)" size="default">修 改</el-button>
+					<el-button type="primary" @click="onSubmit(formRef)" size="default">添 加</el-button>
 				</span>
       </template>
     </el-dialog>
@@ -71,8 +71,8 @@
 import {reactive, toRefs, defineComponent, ref} from 'vue';
 import type { FormRules, FormInstance} from 'element-plus'
 import {ElMessage} from 'element-plus'
-import {IDialog, IData} from '../interface';
-import {editGood, getList} from "/@/api/good";
+import {IDialog} from '../interface';
+import {addGood, getList} from "/@/api/good";
 
 export default defineComponent({
   name: 'edit',
@@ -81,7 +81,7 @@ export default defineComponent({
 
     const initialState = {
       id: -1,
-      listId: -1,
+      listId: 1,
       name: '',
       img: '',
       intro: '',
@@ -95,32 +95,14 @@ export default defineComponent({
       list: []
     });
     // 打开弹窗
-    const openDialog = (data: IData) => {
+    const openDialog = () => {
       state.isShowDialog = true;
-      // state.data.id = data.id
-      // state.data.name = data.name
-      // state.data.userName = data.userName
-      // state.data.password = data.password
-      // state.data.cover = data.cover
-      // state.data.phone = data.phone
-      // state.data.level = data.level
-      // state.data.email = data.email
-      state.data = {...data}
     };
     // 关闭弹窗
     const closeDialog = () => {
       state.isShowDialog = false;
     };
     const resetData = () => {
-      // state.data.id = -1;
-      // state.data.name = '';
-      // state.data.introduction = '';
-      // state.data.userName = '';
-      // state.data.password = '';
-      // state.data.cover = '';
-      // state.data.phone = '';
-      // state.data.level = '';
-      // state.data.email = ''
       Object.assign(state.data, initialState)//重置属性值
     }
     // 取消
@@ -136,15 +118,15 @@ export default defineComponent({
       await formEl.validate((valid) => {
         if (valid) {
           // 对表单进行提交
-          editGood({
+          addGood({
             ...state.data
           }).then((res: any) => {
             if (res.code == 200) {
-              ElMessage.success('修改成功')
+              ElMessage.success('添加成功')
               emit('tableChange')
               closeDialog();
             } else {
-              ElMessage.error('修改失败')
+              ElMessage.error('添加失败')
             }
           })
         } else {
@@ -152,8 +134,6 @@ export default defineComponent({
         }
       })
     }
-
-
 
     const handleChange = (value: number) => {
       state.data.price = value

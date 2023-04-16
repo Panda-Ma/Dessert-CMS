@@ -13,7 +13,7 @@
 			</div>
 			<div class="right">
 				<img
-					src="https://img-blog.csdnimg.cn/9eb1d85a417f4ed1ba7107f149ce3da1.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBAbHl0LXRvcA==,size_16,color_FFFFFF,t_70,g_se,x_16"
+					src="https://7072-prod-4gxu6g6h60295a8a-1316819095.tcb.qcloud.la/img/404.webp?sign=d8ff92c1b406876125f04b2d46b6bd75&t=1681618385"
 				/>
 			</div>
 		</div>

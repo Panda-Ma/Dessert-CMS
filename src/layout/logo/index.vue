@@ -13,7 +13,7 @@ import { computed, defineComponent } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useThemeConfig } from '/@/stores/themeConfig';
 
-import logoMini from '/@/assets/logo-mini.svg';
+import logoMini from '/@/assets/logo-mini.png';
 
 export default defineComponent({
 	name: 'layoutLogo',

@@ -64,7 +64,7 @@
       >
       </el-pagination>
     </el-card>
-<!--    <AddTeacher ref="addTeacherRef" @tableChange='initTableData'></AddTeacher>-->
+    <Add ref="addRef" @tableChange='initTableData'></Add>
     <Edit ref="editRef" @tableChange='initTableData'></Edit>
   </div>
 </template>
@@ -74,8 +74,8 @@ import {reactive, toRefs, defineComponent, onMounted, ref, computed} from 'vue';
 import SvgIcon from "/@/components/svgIcon/index.vue";
 import {ElMessage} from "element-plus";
 import {IData} from "/@/views/good/interface";
-// import AddTeacher from "/@/views/good/component/addTeacher.vue";
 import Edit from "/@/views/good/component/edit.vue";
+import Add from "/@/views/good/component/add.vue";
 import {initGoodTable,searchInfo} from "/@/api/good/index.ts";
 
 
@@ -91,9 +91,9 @@ interface TableState {
 
 export default defineComponent({
   name: 'good',
-  components: { SvgIcon,Edit},
+  components: { SvgIcon,Edit,Add},
   setup() {
-    const addTeacherRef = ref()
+    const addRef = ref()
     const editRef = ref()
     const tableRef = ref()
     const searchKey = ref('')   // 搜索关键字
@@ -119,27 +119,12 @@ export default defineComponent({
     }
     // 更新表格数据
     const resetData = (res: any) => {
-      // const arr: Array<IData> = [];
-      // res.data.forEach((val: any) => {
-      //   arr.push({
-      //     id: val.id,
-      //     listId:val.listId,
-      //     name:val.name,
-      //     img: val.img,
-      //     intro:val.intro,
-      //     price:val.price,
-      //     list: val.list,
-      //     state:val.state,
-      //   })
-      // })
-      // state.data = arr;
-      // state.total = arr.length;
       state.data=res.data
       state.total=res.data.length
     }
     // 添加
     const onAdd = () => {
-      addTeacherRef.value.openDialog()
+      addRef.value.openDialog()
     }
 
     // 搜索框
@@ -167,7 +152,7 @@ export default defineComponent({
     return {
       ...toRefs(state),
       tableRef,
-      addTeacherRef,
+      addRef,
       editRef,
       searchKey,
       currentData,

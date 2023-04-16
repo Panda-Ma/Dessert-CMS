@@ -97,14 +97,6 @@ export default defineComponent({
     // 打开弹窗
     const openDialog = (data: IData) => {
       state.isShowDialog = true;
-      // state.data.id = data.id
-      // state.data.name = data.name
-      // state.data.userName = data.userName
-      // state.data.password = data.password
-      // state.data.cover = data.cover
-      // state.data.phone = data.phone
-      // state.data.level = data.level
-      // state.data.email = data.email
       state.data = {...data}
     };
     // 关闭弹窗
@@ -112,15 +104,6 @@ export default defineComponent({
       state.isShowDialog = false;
     };
     const resetData = () => {
-      // state.data.id = -1;
-      // state.data.name = '';
-      // state.data.introduction = '';
-      // state.data.userName = '';
-      // state.data.password = '';
-      // state.data.cover = '';
-      // state.data.phone = '';
-      // state.data.level = '';
-      // state.data.email = ''
       Object.assign(state.data, initialState)//重置属性值
     }
     // 取消

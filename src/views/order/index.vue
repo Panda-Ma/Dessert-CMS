@@ -2,19 +2,14 @@
   <div class="course-container">
     <el-card shadow="hover">
       <div class="system-user-search mb15" style="position: relative">
-        <el-button size="default" type="success" class="ml10" @click="onAdd" plain>
+
+        <el-button size="default" type="success" class="ml10" @click="getIncomplete" plain>
           <el-icon>
-            <ele-Plus/>
-          </el-icon>
-          添加新点心
-        </el-button>
-        <el-button size="default" type="success" class="ml10" @click="onNew" plain>
-          <el-icon>
-            <ele-Plus/>
+            <ele-Search/>
           </el-icon>
           查询未完成订单
         </el-button>
-        <el-input v-model="searchKey" placeholder="搜索商品名" clearable class="w-50 m-2" size="default"
+        <el-input v-model="searchKey" placeholder="搜索订单编号" clearable class="w-50 m-2" size="default"
                   style="max-width: 300px;position: absolute;right: 30px">
           <template #append>
             <el-button @click="search">
@@ -23,31 +18,23 @@
           </template>
         </el-input>
       </div>
-      <el-table :data="currentData" style="width: 100%"  ref="tableRef" v-loading="loading">
-        <el-table-column type="selection"></el-table-column>
-        <el-table-column label="主键" v-if="false" prop="id"></el-table-column>
-        <el-table-column label="种类listId" v-if="false" prop="listId"></el-table-column>
-        <el-table-column prop="img" label="封面" align="center" width="100px">
-          <template #default="scope" >
-            <el-image :preview-src-list="[scope.row.img]" :src="scope.row.img"
-                      fit="contain" preview-teleported style="width: 100%;min-height: 50px">
-            </el-image>
-          </template>
-        </el-table-column>
-        <el-table-column prop="name" label="商品名" align="center" width="100px"></el-table-column>
-        <el-table-column prop="intro" label="介绍"  align="center" show-overflow-tooltip></el-table-column>
+      <el-table :data="currentData" style="width: 100%" ref="tableRef" v-loading="loading">
+        <el-table-column label="订单编号" prop="id"></el-table-column>
+        <el-table-column label="用户userId" prop="userId"></el-table-column>
+        <el-table-column prop="sum" label="总价" align="center" width="100px"></el-table-column>
+        <el-table-column prop="num" label="商品数量" align="center"></el-table-column>
+        <el-table-column prop="note" label="备注" align="center" show-overflow-tooltip></el-table-column>
         <el-table-column prop="state" label="状态" align="center" width="105px">
           <template #default="scope">
-            <el-tag type="info" v-if="scope.row.state==='下架'">下架</el-tag>
-            <el-tag type="success" v-else-if="scope.row.state==='上架'">上架</el-tag>
+            <el-tag type="info" v-if="scope.row.state==='进行中'">进行中</el-tag>
+            <el-tag type="success" v-else-if="scope.row.state==='已完成'">已完成</el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="price" label="单价"  align="center" ></el-table-column>
-        <el-table-column prop="list" label="种类"  align="center" ></el-table-column>
+        <el-table-column prop="time" label="创建时间" align="center"></el-table-column>
         <el-table-column label="操作" align="center" width="100px">
           <template #default="scope">
-            <el-button size="small" text type="primary" @click="onEdit(scope.row)">
-              修改
+            <el-button size="small" text type="primary" @click="onDetail(scope.row)">
+              详情
             </el-button>
           </template>
         </el-table-column>
@@ -64,8 +51,7 @@
       >
       </el-pagination>
     </el-card>
-    <Add ref="addRef" @tableChange='initTableData'></Add>
-    <Edit ref="editRef" @tableChange='initTableData'></Edit>
+    <Detail ref="detailRef" @tableChange='initTableData'></Detail>
   </div>
 </template>
 
@@ -73,28 +59,26 @@
 import {reactive, toRefs, defineComponent, onMounted, ref, computed} from 'vue';
 import SvgIcon from "/@/components/svgIcon/index.vue";
 import {ElMessage} from "element-plus";
-import {IData} from "/@/views/good/interface";
-import Edit from "/@/views/good/component/edit.vue";
-import Add from "/@/views/good/component/add.vue";
-import {initGoodTable,searchInfo} from "/@/api/good/index.ts";
+import {IData} from "/@/views/order/interface";
+import Detail from "/@/views/order/component/detail.vue";
+import {initOrderTable, searchIncomplete, searchInfo} from "/@/api/order/index.ts";
 
 
 // 页面数据：表格数据、分页数据
 interface TableState {
-    data: Array<IData>
-    total: number;
-    loading: boolean;
-    currentPage: number; // 当前页码
-    pageSize: number;   // 每页显示的页数
+  data: Array<IData>
+  total: number;
+  loading: boolean;
+  currentPage: number; // 当前页码
+  pageSize: number;   // 每页显示的页数
 }
 
 
 export default defineComponent({
-  name: 'good',
-  components: { SvgIcon,Edit,Add},
+  name: 'order',
+  components: {SvgIcon,Detail},
   setup() {
-    const addRef = ref()
-    const editRef = ref()
+    const detailRef = ref()
     const tableRef = ref()
     const searchKey = ref('')   // 搜索关键字
 
@@ -110,26 +94,31 @@ export default defineComponent({
     })
     // 初始化表格数据
     const initTableData = () => {
-      initGoodTable().then((res:any) => {
+      initOrderTable().then((res: any) => {
         resetData(res)
       })
     };
-    const onNew=()=>{
 
-    }
     // 更新表格数据
     const resetData = (res: any) => {
-      state.data=res.data
-      state.total=res.data.length
-    }
-    // 添加
-    const onAdd = () => {
-      addRef.value.openDialog()
+      state.data = res.data
+      state.total = res.data.length
     }
 
+    const getIncomplete = () => {
+      state.loading = true
+      searchIncomplete().then((res: any) => {
+        state.loading = false // 加载动画结束
+        if (res.code == 200) {
+          resetData(res)
+        } else {
+          ElMessage.error('抱歉,搜索失败...')
+        }
+      })
+    }
     // 搜索框
-    const search= () => {
-      state.loading=true
+    const search = () => {
+      state.loading = true
       searchInfo({
         keyword: searchKey.value
       }).then((res: any) => {
@@ -142,8 +131,8 @@ export default defineComponent({
       })
     }
 
-    const onEdit = (row: IData) => {
-      editRef.value.openDialog(row)
+    const onDetail = (row: IData) => {
+      detailRef.value.openDialog(row)
     }
     // 页面加载时
     onMounted(() => {
@@ -152,15 +141,13 @@ export default defineComponent({
     return {
       ...toRefs(state),
       tableRef,
-      addRef,
-      editRef,
+      detailRef,
       searchKey,
       currentData,
       search,
       initTableData,
-      onAdd,
-      onEdit,
-      onNew
+      onDetail,
+      getIncomplete
     };
   },
 });

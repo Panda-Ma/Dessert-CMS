@@ -34,3 +34,10 @@ export function searchInfo(obj:object) {
         params: obj,
     })
 }
+
+export function getList() {
+    return request({
+        url: '/cms/good/getList',
+        method:'get',
+    })
+}

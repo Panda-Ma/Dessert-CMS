@@ -65,7 +65,7 @@
       </el-pagination>
     </el-card>
 <!--    <AddTeacher ref="addTeacherRef" @tableChange='initTableData'></AddTeacher>-->
-<!--    <EditTeacher ref="editTeacherRef" @tableChange='initTableData'></EditTeacher>-->
+    <Edit ref="editRef" @tableChange='initTableData'></Edit>
   </div>
 </template>
 
@@ -73,15 +73,15 @@
 import {reactive, toRefs, defineComponent, onMounted, ref, computed} from 'vue';
 import SvgIcon from "/@/components/svgIcon/index.vue";
 import {ElMessage} from "element-plus";
-import {Good} from "/@/views/good/interface";
+import {IData} from "/@/views/good/interface";
 // import AddTeacher from "/@/views/good/component/addTeacher.vue";
-// import EditTeacher from "/@/views/good/component/editTeacher.vue";
+import Edit from "/@/views/good/component/edit.vue";
 import {initGoodTable,searchInfo} from "/@/api/good/index.ts";
 
 
 // 页面数据：表格数据、分页数据
 interface TableState {
-    data: Array<Good>
+    data: Array<IData>
     total: number;
     loading: boolean;
     currentPage: number; // 当前页码
@@ -91,10 +91,10 @@ interface TableState {
 
 export default defineComponent({
   name: 'good',
-  components: { SvgIcon},
+  components: { SvgIcon,Edit},
   setup() {
     const addTeacherRef = ref()
-    const editTeacherRef = ref()
+    const editRef = ref()
     const tableRef = ref()
     const searchKey = ref('')   // 搜索关键字
 
@@ -119,7 +119,7 @@ export default defineComponent({
     }
     // 更新表格数据
     const resetData = (res: any) => {
-      // const arr: Array<Good> = [];
+      // const arr: Array<IData> = [];
       // res.data.forEach((val: any) => {
       //   arr.push({
       //     id: val.id,
@@ -157,8 +157,8 @@ export default defineComponent({
       })
     }
 
-    const onEdit = (row: Good) => {
-      editTeacherRef.value.openDialog(row)
+    const onEdit = (row: IData) => {
+      editRef.value.openDialog(row)
     }
     // 页面加载时
     onMounted(() => {
@@ -168,7 +168,7 @@ export default defineComponent({
       ...toRefs(state),
       tableRef,
       addTeacherRef,
-      editTeacherRef,
+      editRef,
       searchKey,
       currentData,
       search,
